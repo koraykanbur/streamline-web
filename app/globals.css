@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    overflow-x: clip;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background: #0a1628;
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .btn-light,
+  .btn-dark,
+  .btn-ghost-light,
+  .btn-ghost-dark {
+    @apply inline-flex h-12 items-center justify-center rounded-full px-6 text-[0.95rem] font-medium transition-[background-color,color,border-color,transform] duration-200 active:scale-[0.98];
+  }
+  .btn-light { @apply bg-white text-navy hover:bg-mist; }
+  .btn-dark { @apply bg-navy text-white hover:bg-navy-3; }
+  .btn-ghost-light { @apply border border-white/25 text-white hover:border-white/60; }
+  .btn-ghost-dark { @apply border border-navy/20 text-navy hover:border-navy/50; }
+
+  .field-label { @apply mb-1.5 block text-sm font-medium text-navy; }
+  .field {
+    @apply block w-full rounded-lg border border-line bg-white px-4 py-3 text-base text-navy placeholder:text-slate/80 transition-colors focus:border-navy focus:outline-none focus:ring-2 focus:ring-navy/10;
+  }
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-navy;
+  }
+}
+
+/* ── map ─────────────────────────────── */
+.map-label {
+  fill: #ffffff;
+  fill-opacity: 0.82;
+  font-family: "Inter Variable", Inter, system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  paint-order: stroke;
+  stroke: #0a1628;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.map-check {
+  opacity: var(--t, 0);
+}
+.map-check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--t, 0));
+}
+.journey-map [data-node],
+.journey-map [data-veh],
+.journey-map [data-lit] {
+  will-change: opacity;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.pulse-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse-ring 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+/* hero routes: draw once, then a light pulse travels along them */
+@keyframes draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+@keyframes comet {
+  0% { stroke-dashoffset: 104; opacity: 0; }
+  10% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { stroke-dashoffset: -4; opacity: 0; }
+}
+@keyframes node-in { from { opacity: 0; } to { opacity: 1; } }
+.hero-route { stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 2.4s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+.hero-route.r2 { animation-delay: 0.25s; }
+.hero-route.r3 { animation-duration: 3.4s; animation-delay: 0.15s; }
+.hero-route.r4 { animation-delay: 2.6s; animation-duration: 0.9s; }
+.hero-comet { stroke-dasharray: 3 101; stroke-dashoffset: 104; opacity: 0; animation: comet 4.5s linear 3s infinite; }
+.hero-comet.r2 { animation-delay: 4.2s; }
+.hero-comet.r3 { animation-duration: 9s; animation-delay: 3.6s; }
+.hero-comet.r4 { animation-duration: 2s; animation-delay: 7s; }
+.hero-node { opacity: 0; animation: node-in 0.8s ease forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero-route { animation: none; stroke-dashoffset: 0; }
+  .hero-comet, .pulse-ring { animation: none; display: none; }
+  .hero-node { animation: none; opacity: 1; }
+}
