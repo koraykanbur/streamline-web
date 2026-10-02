@@ -45,6 +45,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="bg-navy font-sans text-navy antialiased">
+        {/* Start at the top on every load/refresh: no restored scroll position, no jump to a #section */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{history.scrollRestoration="manual";if(location.hash){history.replaceState(null,"",location.pathname+location.search)}var t=function(){window.scrollTo({top:0,left:0,behavior:"instant"})};t();addEventListener("pageshow",t);addEventListener("load",t)}catch(e){}`,
+          }}
+        />
         <a href="#main" className="skip-link">Skip to content</a>
         {children}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

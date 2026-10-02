@@ -11,11 +11,11 @@ export default function Footer() {
             Sourcing and logistics from China to the UAE and Saudi Arabia. Source, collect, ship, clear, deliver.
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-10 text-sm">
+        <div className="grid grid-cols-1 gap-8 text-sm sm:grid-cols-2 sm:gap-10">
           <div className="space-y-2">
             <p className="text-white/40">Contact</p>
             {hasWhatsApp && <a className="block text-white/80 hover:text-white" href={whatsappLink()} target="_blank" rel="noopener noreferrer">WhatsApp</a>}
-            <a className="block text-white/80 hover:text-white" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+            <a className="block text-white/80 [overflow-wrap:anywhere] hover:text-white" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
           </div>
           <div className="space-y-2">
             <p className="text-white/40">Explore</p>

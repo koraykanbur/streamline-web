@@ -30,7 +30,7 @@ export default function Quote() {
               <span className="grid h-11 w-11 place-items-center rounded-full bg-white text-navy"><IconMail width={20} height={20} /></span>
               <span>
                 <span className="block text-sm text-white/55">Email</span>
-                <span className="block font-medium">{CONTACT.email}</span>
+                <span className="block font-medium [overflow-wrap:anywhere]">{CONTACT.email}</span>
               </span>
             </a>
           </div>
@@ -60,7 +60,7 @@ function TallyEmbed({ id }: { id: string }) {
       />
       <Script src="https://tally.so/widgets/embed.js" strategy="lazyOnload" />
       <p className="mt-4 border-t border-line pt-4 text-sm text-slate-dark">
-        Form not loading? Email us at <a className="font-medium text-navy underline underline-offset-4" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+        Form not loading? Email us at{" "}<br className="sm:hidden" /><a className="font-medium text-navy underline underline-offset-4 [overflow-wrap:anywhere]" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
         {hasWhatsApp && (<> or <a className="font-medium text-navy underline underline-offset-4" href={whatsappLink()} target="_blank" rel="noopener noreferrer">message us on WhatsApp</a></>)}.
       </p>
     </>
