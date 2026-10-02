@@ -7,11 +7,8 @@ import { IconWhatsApp } from "./glyphs";
 export function Logo({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden fill="none">
-        <circle cx="4.5" cy="19" r="2.6" fill="currentColor" />
-        <circle cx="21.5" cy="7" r="2.6" stroke="currentColor" strokeWidth="1.6" />
-        <path d="M6.8 17.6C11 15 10 9.2 19 7.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      </svg>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/logo-mark.png" width={30} height={30} alt="" aria-hidden className="h-[30px] w-[30px]" />
       <span className="font-display text-[1.2rem] font-semibold tracking-[-0.02em]">Streamline</span>
     </span>
   );
