@@ -25,7 +25,7 @@ export default function FullJourney() {
     <section className="bg-white px-6 py-28 text-navy sm:px-10 lg:py-36" aria-labelledby="full-journey-title">
       <div className="mx-auto max-w-page">
         <h2 id="full-journey-title" className="max-w-4xl font-display text-[clamp(2.6rem,6.5vw,5.8rem)] font-semibold leading-[0.92] tracking-[-0.03em]">
-          You name it.
+          Say the word.
           <br />
           We handle the rest.
         </h2>
