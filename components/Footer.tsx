@@ -20,7 +20,9 @@ export default function Footer() {
           <div className="space-y-2">
             <p className="text-white/40">Explore</p>
             <a className="block text-white/80 hover:text-white" href="#journey">How it works</a>
+            <a className="block text-white/80 hover:text-white" href="#route">Your route</a>
             <a className="block text-white/80 hover:text-white" href="#services">Services</a>
+            <a className="block text-white/80 hover:text-white" href="#faq">Questions</a>
             <a className="block text-white/80 hover:text-white" href={quoteHref}>Request a quote</a>
           </div>
         </div>

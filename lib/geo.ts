@@ -93,6 +93,8 @@ const seaToDammam: [number, number][] = [
 
 export const ROUTES = {
   sea: smoothPath(seaMain.map(([lo, la]) => project(lo, la))),
+  // Sea lane up to the Strait of Hormuz only (used where the Dammam branch continues from there)
+  seaTrunk: smoothPath(seaMain.slice(0, 17).map(([lo, la]) => project(lo, la))),
   seaKsa: smoothPath(seaToDammam.map(([lo, la]) => project(lo, la))),
   air: arcPath(P(HUB), P(DXB), 120),
   airKsa: arcPath(P(HUB), P(RUH), 150),

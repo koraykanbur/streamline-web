@@ -16,6 +16,12 @@ Almost everything you'll want to edit is in **`lib/constants.ts`**:
 | Air / sea timelines + disclaimer | `TIMELINES` |
 | Founder story | `FOUNDER` |
 
+| FAQ questions and answers | `FAQS` |
+| Pass hero/route picks into Tally (needs hidden fields `product`, `destination`, `shipping`) | `TALLY_PREFILL` |
+
+**Going back to the earlier design:** the site as it was before the hero input, step-through,
+route planner and FAQ were added is tagged `v1-original`.
+
 Journey stage copy lives in `lib/journey.ts`. Services and "Why Streamline" copy are in
 `components/Services.tsx` and `components/Why.tsx`.
 

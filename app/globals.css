@@ -35,6 +35,8 @@
   .btn-ghost-light { @apply border border-white/25 text-white hover:border-white/60; }
   .btn-ghost-dark { @apply border border-navy/20 text-navy hover:border-navy/50; }
 
+  .eyebrow { @apply text-[0.8rem] font-medium uppercase tracking-[0.14em]; }
+
   .field-label { @apply mb-1.5 block text-sm font-medium text-navy; }
   .field {
     @apply block w-full rounded-lg border border-line bg-white px-4 py-3 text-base text-navy placeholder:text-slate/80 transition-colors focus:border-navy focus:outline-none focus:ring-2 focus:ring-navy/10;
@@ -56,6 +58,10 @@
   stroke-width: 3px;
   stroke-linejoin: round;
 }
+/* route planner labels: SVG units, so bigger on small screens where the map is scaled down */
+.route-label { font-size: 30px; stroke: #0f1f37; stroke-width: 6px; }
+@media (min-width: 640px) { .route-label { font-size: 20px; stroke-width: 4px; } }
+@media (min-width: 1024px) { .route-label { font-size: 16px; } }
 .map-check {
   opacity: var(--t, 0);
 }

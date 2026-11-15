@@ -4,7 +4,8 @@ import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { LAND_DOTS } from "@/lib/map-dots";
 import { ROUTES, pts } from "@/lib/geo";
-import { quoteHref } from "@/lib/constants";
+import { TIMELINES } from "@/lib/constants";
+import { goToQuote, setBrief } from "@/lib/brief";
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -63,13 +64,34 @@ export default function Hero() {
             <p className="text-lg leading-relaxed text-white/75">
               Source products across China. Coordinate logistics. Handle customs. Deliver directly to the UAE and Saudi Arabia.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href={quoteHref} className="btn-light">Request a quote</a>
-              <a href="#journey" className="btn-ghost-light">
-                Explore the journey
-                <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden className="ml-2"><path d="M7 2v10M3 8l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </a>
-            </div>
+            <form
+              className="mt-8 flex items-center gap-1 rounded-full bg-white p-1.5 pl-5 text-navy focus-within:ring-2 focus-within:ring-white/40"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const product = String(new FormData(e.currentTarget).get("product") ?? "").trim();
+                if (product) setBrief({ product });
+                goToQuote();
+              }}
+            >
+              <label htmlFor="hero-product" className="sr-only">What do you need sourced?</label>
+              <input
+                id="hero-product"
+                name="product"
+                type="text"
+                autoComplete="off"
+                maxLength={120}
+                placeholder="What do you need?"
+                className="h-11 min-w-0 flex-1 bg-transparent text-base placeholder:text-slate-dark focus:outline-none"
+              />
+              <button type="submit" className="btn-dark !h-11 shrink-0 !px-5">Get a quote</button>
+            </form>
+            <p className="mt-3 text-sm text-white/55">
+              Air about {TIMELINES.air}, sea about {TIMELINES.sea}, door to door.
+            </p>
+            <a href="#journey" className="mt-6 inline-flex items-center text-[0.95rem] font-medium text-white/80 underline-offset-4 transition-colors hover:text-white hover:underline">
+              Explore the journey
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden className="ml-2"><path d="M7 2v10M3 8l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </a>
           </motion.div>
         </div>
       </div>

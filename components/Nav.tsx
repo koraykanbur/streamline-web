@@ -16,9 +16,10 @@ export function Logo({ className = "" }: { className?: string }) {
 
 const LINKS = [
   { href: "#journey", label: "How it works" },
+  { href: "#route", label: "Your route" },
   { href: "#services", label: "Services" },
-  { href: "#why", label: "Why Streamline" },
   { href: "#founder", label: "About" },
+  { href: "#faq", label: "Questions" },
 ];
 
 export default function Nav() {

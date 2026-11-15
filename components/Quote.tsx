@@ -2,10 +2,13 @@
 
 import Script from "next/script";
 import { useState, type FormEvent } from "react";
-import { CONTACT, TALLY_FORM_ID, hasWhatsApp, whatsappLink } from "@/lib/constants";
+import { CONTACT, TALLY_FORM_ID, TALLY_PREFILL, hasWhatsApp, whatsappLink } from "@/lib/constants";
+import { FREIGHT } from "@/lib/journey";
+import { clearBrief, hasBrief, useBrief, type Brief } from "@/lib/brief";
 import { IconMail, IconWhatsApp } from "./glyphs";
 
 export default function Quote() {
+  const brief = useBrief();
   return (
     <section id="quote" className="scroll-mt-16 bg-navy px-6 py-28 text-white sm:px-10 lg:py-36" aria-labelledby="quote-title">
       <div className="mx-auto grid max-w-page gap-16 lg:grid-cols-[0.85fr_1.15fr]">
@@ -37,19 +40,49 @@ export default function Quote() {
         </div>
 
         <div className="rounded-2xl bg-white p-6 text-navy sm:p-10">
-          {TALLY_FORM_ID ? <TallyEmbed id={TALLY_FORM_ID} /> : <FallbackForm />}
+          {hasBrief(brief) && <BriefBar brief={brief} />}
+          {TALLY_FORM_ID ? <TallyEmbed id={TALLY_FORM_ID} brief={brief} /> : <FallbackForm brief={brief} />}
         </div>
       </div>
     </section>
   );
 }
 
-function TallyEmbed({ id }: { id: string }) {
+/** What the visitor already told us higher up the page. */
+function BriefBar({ brief }: { brief: Brief }) {
+  const chips = [brief.product, brief.destination, brief.mode && FREIGHT[brief.mode].label].filter(Boolean) as string[];
+  const carried = !TALLY_FORM_ID || TALLY_PREFILL;
+  return (
+    <div className="mb-6 rounded-xl bg-mist p-4" role="status">
+      <div className="flex items-start justify-between gap-4">
+        <p className="text-sm text-slate-dark">{carried ? "Already in your request" : "You picked"}</p>
+        <button type="button" onClick={clearBrief} className="text-sm text-slate-dark underline underline-offset-4 hover:text-navy">Clear</button>
+      </div>
+      <ul className="mt-2 flex flex-wrap gap-2">
+        {chips.map((c) => (
+          <li key={c} className="rounded-full bg-white px-3 py-1 text-sm font-medium [overflow-wrap:anywhere]">{c}</li>
+        ))}
+      </ul>
+      {!carried && <p className="mt-3 text-sm text-slate-dark">Add it to the form below so we have it.</p>}
+    </div>
+  );
+}
+
+function TallyEmbed({ id, brief }: { id: string; brief: Brief }) {
   // Embed params per Tally's embed docs — verify at tally.so/help if anything looks off.
-  const src = `https://tally.so/embed/${id}?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1`;
+  // Hidden-field prefill only runs once TALLY_PREFILL is switched on in lib/constants.ts.
+  const extra = new URLSearchParams();
+  if (TALLY_PREFILL) {
+    if (brief.product) extra.set("product", brief.product);
+    if (brief.destination) extra.set("destination", brief.destination);
+    if (brief.mode) extra.set("shipping", FREIGHT[brief.mode].label);
+  }
+  const q = extra.toString();
+  const src = `https://tally.so/embed/${id}?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1${q ? `&${q}` : ""}`;
   return (
     <>
       <iframe
+        key={src}
         data-tally-src={src}
         src={src}
         loading="lazy"
@@ -75,7 +108,7 @@ const FIELDS = [
 ] as const;
 
 /** Works with no backend: sends the request to WhatsApp (or email) pre-filled. */
-function FallbackForm() {
+function FallbackForm({ brief }: { brief: Brief }) {
   const [sent, setSent] = useState<null | "whatsapp" | "email">(null);
 
   const build = (form: HTMLFormElement) => {
@@ -108,13 +141,13 @@ function FallbackForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2">
+    <form key={`${brief.product ?? ""}|${brief.destination ?? ""}|${brief.mode ?? ""}`} onSubmit={onSubmit} className="grid gap-5 sm:grid-cols-2">
       {FIELDS.map((f) => (
         <Field key={f.name} {...f} />
       ))}
       <div className="sm:col-span-2">
         <label htmlFor="destination" className="field-label">Destination</label>
-        <select id="destination" name="destination" required defaultValue="" className="field">
+        <select id="destination" name="destination" required defaultValue={brief.destination ?? ""} className="field">
           <option value="" disabled>Choose a destination</option>
           <option>UAE</option>
           <option>Saudi Arabia</option>
@@ -122,13 +155,13 @@ function FallbackForm() {
         </select>
       </div>
       <div className="sm:col-span-2">
-        <Field name="product" label="Product needed" type="text" required placeholder="e.g. stainless steel water bottles, 750ml" />
+        <Field name="product" label="Product needed" type="text" required defaultValue={brief.product} placeholder="e.g. stainless steel water bottles, 750ml" />
       </div>
       <Field name="quantity" label="Quantity" type="text" placeholder="e.g. 2,000 units" />
       <div className="hidden sm:block" />
       <div className="sm:col-span-2">
         <label htmlFor="notes" className="field-label">Additional notes <span className="text-slate">(optional)</span></label>
-        <textarea id="notes" name="notes" rows={4} className="field resize-y" placeholder="Branding, packaging, target price, deadline…" />
+        <textarea id="notes" name="notes" rows={4} className="field resize-y" defaultValue={brief.mode ? `Shipping: ${FREIGHT[brief.mode].label}` : undefined} placeholder="Branding, packaging, target price, deadline…" />
       </div>
       <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
         <button type="submit" value="whatsapp" className="btn-dark">Request a quote</button>
@@ -143,13 +176,13 @@ function FallbackForm() {
   );
 }
 
-function Field({ name, label, type, autoComplete, required, placeholder }: { name: string; label: string; type: string; autoComplete?: string; required?: boolean; placeholder?: string }) {
+function Field({ name, label, type, autoComplete, required, placeholder, defaultValue }: { name: string; label: string; type: string; autoComplete?: string; required?: boolean; placeholder?: string; defaultValue?: string }) {
   return (
     <div>
       <label htmlFor={name} className="field-label">
         {label} {!required && <span className="text-slate">(optional)</span>}
       </label>
-      <input id={name} name={name} type={type} autoComplete={autoComplete} required={required} placeholder={placeholder} className="field" />
+      <input id={name} name={name} type={type} autoComplete={autoComplete} required={required} placeholder={placeholder} defaultValue={defaultValue} className="field" />
     </div>
   );
 }
